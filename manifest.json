@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "LC Helper (WIP)",
+  "version": "0.4.1",
+  "permissions": ["storage", "tabs"],
+  "host_permissions": [
+    "https://leetcode.com/*",
+    "https://leetcode.cn/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://leetcode.com/problems/*",
+        "https://leetcode.cn/problems/*"
+      ],
+      "js": ["content_script.js"],
+      "css": ["ui.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": { "service_worker": "service_worker.js", "type": "module" },
+  "options_page": "options.html"
+}

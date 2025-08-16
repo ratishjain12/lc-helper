@@ -1,0 +1,339 @@
+/* =========================
+   LC Helper Panel — Full CSS
+   ========================= */
+
+#lc-helper {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 999999;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Helvetica Neue";
+
+  /* Theme tokens */
+  --bg: #ffffff;
+  --text: #0f172a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --header-border: #f1f5f9;
+  --btn-bg: #111827; /* neutral, not green */
+  --btn-fg: #ffffff;
+  --btn-bg-hover: #0b1220;
+  --focus: #3b82f6; /* visible focus ring */
+  --code-bg: rgba(2, 6, 23, 0.06);
+  --card-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  #lc-helper {
+    --bg: #0e1726;
+    --text: #e5eefc;
+    --muted: #93a4bf;
+    --border: #1f2a44;
+    --header-border: #1f2a44;
+    --btn-bg: #1f2937; /* neutral slate in dark */
+    --btn-fg: #e5e7eb;
+    --btn-bg-hover: #273244;
+    --focus: #60a5fa;
+    --code-bg: rgba(255, 255, 255, 0.1);
+    --card-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* Card layout: column; only .body scrolls */
+#lc-helper .card {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  max-height: 70vh;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+  color: var(--text);
+}
+
+#lc-helper .card * {
+  box-sizing: border-box;
+}
+
+/* Header */
+#lc-helper header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--header-border);
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.04), transparent);
+}
+
+#lc-helper header .title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+#lc-helper header .actions {
+  display: flex;
+  gap: 6px;
+}
+
+#lc-helper header .actions button {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--text);
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  opacity: 0.9;
+}
+#lc-helper header .actions button:hover {
+  opacity: 1;
+  background: rgba(2, 6, 23, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  #lc-helper header .actions button:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Body (answer area) — scrolls */
+#lc-helper .body {
+  flex: 1 1 auto;
+  overflow: auto;
+  max-height: unset;
+  padding: 10px 12px;
+  line-height: 1.55;
+  font-size: 14px;
+}
+
+/* Buttons footer — fixed; grid layout with hints side-by-side */
+#lc-helper .buttons {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 equal columns */
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--header-border);
+  background: linear-gradient(0deg, rgba(2, 6, 23, 0.04), transparent),
+    var(--bg);
+}
+
+/* Default: each button spans full width (all 3 columns) */
+#lc-helper .buttons button {
+  grid-column: 1 / -1;
+  width: 100%;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.2;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.15s ease, transform 0.06s ease,
+    opacity 0.15s ease;
+}
+#lc-helper .buttons button:hover {
+  background: var(--btn-bg-hover);
+}
+#lc-helper .buttons button:active {
+  transform: translateY(1px);
+}
+
+/* Make only the hint buttons share one row (one column each) */
+#lc-helper .buttons button[data-mode="hint1"],
+#lc-helper .buttons button[data-mode="hint2"],
+#lc-helper .buttons button[data-mode="hint3"] {
+  grid-column: auto; /* occupy a single grid column */
+}
+
+/* Keep “secondary” style visually identical to primary (no color change) */
+#lc-helper .buttons button.secondary {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+#lc-helper .buttons button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Text utils */
+#lc-helper .muted {
+  color: var(--muted);
+  font-size: 12px;
+}
+#lc-helper .msg {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Loading */
+#lc-helper .loading {
+  animation: lc-pulse 1.2s ease-in-out infinite;
+  opacity: 0.85;
+}
+@keyframes lc-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Scrollbar polish */
+#lc-helper .body::-webkit-scrollbar {
+  width: 10px;
+}
+#lc-helper .body::-webkit-scrollbar-track {
+  background: transparent;
+}
+#lc-helper .body::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.12);
+  border-radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  #lc-helper .body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+  }
+}
+
+/* =========================
+     Markdown presentation
+     ========================= */
+#lc-helper .markdown {
+  white-space: normal; /* allow HTML flow */
+  line-height: 1.55;
+  font-size: 14px;
+  color: var(--text);
+}
+
+#lc-helper .markdown h1,
+#lc-helper .markdown h2,
+#lc-helper .markdown h3,
+#lc-helper .markdown h4,
+#lc-helper .markdown h5,
+#lc-helper .markdown h6 {
+  margin: 10px 0 6px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+#lc-helper .markdown h1 {
+  font-size: 18px;
+}
+#lc-helper .markdown h2 {
+  font-size: 16px;
+}
+#lc-helper .markdown h3 {
+  font-size: 15px;
+}
+#lc-helper .markdown h4 {
+  font-size: 14px;
+}
+#lc-helper .markdown h5 {
+  font-size: 13px;
+}
+#lc-helper .markdown h6 {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#lc-helper .markdown p {
+  margin: 8px 0;
+}
+#lc-helper .markdown ul,
+#lc-helper .markdown ol {
+  margin: 8px 0 8px 18px;
+  padding: 0;
+}
+#lc-helper .markdown li {
+  margin: 4px 0;
+}
+
+#lc-helper .markdown hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 10px 0;
+}
+
+#lc-helper .markdown code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 12.5px;
+  background: var(--code-bg);
+  padding: 2px 5px;
+  border-radius: 6px;
+}
+
+#lc-helper .markdown pre {
+  background: var(--code-bg);
+  padding: 10px;
+  border-radius: 10px;
+  overflow: auto;
+  margin: 10px 0;
+}
+#lc-helper .markdown pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 12.5px;
+  display: block;
+  white-space: pre;
+}
+
+#lc-helper .markdown blockquote {
+  margin: 8px 0;
+  padding: 6px 10px;
+  border-left: 3px solid var(--border);
+  background: rgba(2, 6, 23, 0.04);
+  border-radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  #lc-helper .markdown blockquote {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+#lc-helper .markdown a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+#lc-helper .markdown a:hover {
+  opacity: 0.9;
+}
+
+/* =========================
+     Markdown tables
+     ========================= */
+#lc-helper .markdown table.md-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  display: block; /* allow horizontal scroll on narrow panel */
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+#lc-helper .markdown table.md-table thead th {
+  background: rgba(2, 6, 23, 0.04);
+  font-weight: 700;
+}
+@media (prefers-color-scheme: dark) {
+  #lc-helper .markdown table.md-table thead th {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+#lc-helper .markdown table.md-table th,
+#lc-helper .markdown table.md-table td {
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 13px;
+}
