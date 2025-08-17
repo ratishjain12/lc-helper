@@ -4,8 +4,8 @@
 
 #lc-helper {
   position: fixed;
-  right: 16px;
-  bottom: 16px;
+  right: 20px;
+  bottom: 20px;
   z-index: 999999;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
     "Helvetica Neue";
@@ -44,10 +44,10 @@
 #lc-helper .card {
   display: flex;
   flex-direction: column;
-  width: 320px;
-  max-height: 70vh;
+  width: 420px;
+  max-height: 80vh;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 16px;
   background: var(--bg);
   border: 1px solid var(--border);
   box-shadow: var(--card-shadow);
@@ -63,14 +63,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--header-border);
   background: linear-gradient(180deg, rgba(2, 6, 23, 0.04), transparent);
 }
 
 #lc-helper header .title {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 #lc-helper header .actions {
@@ -104,7 +104,7 @@
   flex: 1 1 auto;
   overflow: auto;
   max-height: unset;
-  padding: 10px 12px;
+  padding: 14px 16px;
   line-height: 1.55;
   font-size: 14px;
 }
@@ -114,8 +114,8 @@
   flex: 0 0 auto;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 equal columns */
-  gap: 8px;
-  padding: 10px 12px 12px;
+  gap: 10px;
+  padding: 14px 16px 16px;
   border-top: 1px solid var(--header-border);
   background: linear-gradient(0deg, rgba(2, 6, 23, 0.04), transparent),
     var(--bg);
@@ -128,9 +128,9 @@
   background: var(--btn-bg);
   color: var(--btn-fg);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 13px;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
   line-height: 1.2;
   cursor: pointer;
   font-weight: 600;
@@ -336,4 +336,334 @@
   padding: 6px 8px;
   text-align: left;
   font-size: 13px;
+}
+
+/* =========================
+     Template Selector - Modern Design
+     ========================= */
+#lc-helper .template-selector {
+  padding: 0;
+}
+
+#lc-helper .template-header {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+#lc-helper .template-header h3 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+#lc-helper .template-header p {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+#lc-helper .actions button#lc-toggle-options,
+#lc-helper .actions button#lc-minimize {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0 2px;
+}
+
+#lc-helper .actions button#lc-toggle-options:hover,
+#lc-helper .actions button#lc-minimize:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: translateY(-1px);
+}
+
+#lc-helper .buttons {
+  transition: all 0.3s ease;
+}
+
+#lc-helper .buttons[style*="display: none"] {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+#lc-helper .template-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#lc-helper .select-wrapper {
+  flex: 1;
+  min-width: 150px;
+  position: relative;
+}
+
+#lc-helper .select-wrapper::after {
+  content: "▼";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+#lc-helper .template-controls select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#lc-helper .template-controls select:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#lc-helper .template-controls select optgroup {
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+}
+
+#lc-helper .template-controls select option {
+  font-weight: 400;
+  padding: 4px 8px;
+}
+
+#lc-helper .copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+#lc-helper .copy-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+}
+
+#lc-helper .copy-btn:active {
+  transform: translateY(0);
+}
+
+#lc-helper .copy-icon {
+  font-size: 14px;
+}
+
+#lc-helper .template-description {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1),
+    rgba(59, 130, 246, 0.05)
+  );
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#lc-helper .template-desc strong {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+#lc-helper .template-desc small {
+  font-size: 11px;
+  opacity: 0.8;
+  display: block;
+  margin-top: 4px;
+}
+
+#lc-helper .template-code-container {
+  margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+#lc-helper .code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--code-bg);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#lc-helper .code-label {
+  color: var(--text);
+}
+
+#lc-helper .code-hint {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+#lc-helper .code-block {
+  background: var(--code-bg);
+  padding: 20px;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-x: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+  cursor: text;
+  user-select: text;
+}
+
+#lc-helper .code-block:hover {
+  background: rgba(2, 6, 23, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  #lc-helper .code-block:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+#lc-helper .template-categories {
+  margin-top: 20px;
+}
+
+#lc-helper .template-categories h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+}
+
+#lc-helper .category-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+#lc-helper .category-card {
+  padding: 16px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+#lc-helper .category-card:hover {
+  border-color: var(--focus);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#lc-helper .category-card.active {
+  border-color: var(--focus);
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+#lc-helper .category-card h5 {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#lc-helper .category-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#lc-helper .category-card li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+  padding: 4px 0;
+}
+
+#lc-helper .difficulty {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+#lc-helper .difficulty.easy {
+  background: rgba(34, 197, 94, 0.2);
+  color: #16a34a;
+}
+
+#lc-helper .difficulty.medium {
+  background: rgba(245, 158, 11, 0.2);
+  color: #d97706;
+}
+
+#lc-helper .difficulty.hard {
+  background: rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+#lc-helper .difficulty.medium-hard {
+  background: rgba(168, 85, 247, 0.2);
+  color: #9333ea;
 }
