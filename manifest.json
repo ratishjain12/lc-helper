@@ -14,7 +14,7 @@
         "https://leetcode.com/problems/*",
         "https://leetcode.cn/problems/*"
       ],
-      "js": ["content_script.js"],
+      "js": ["template-loader.js", "templates.js", "content_script.js"],
       "css": ["ui.css"],
       "run_at": "document_idle"
     }

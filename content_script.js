@@ -232,6 +232,265 @@ Rules:
 - Keep answers concise and focused on the requested button.
 `.trim();
 
+// Templates are now imported from templates.js
+
+function generateTemplateResponse(problem) {
+  const problemText = problem.contentText.toLowerCase();
+  const title = problem.title.toLowerCase();
+  const topics = problem.topicTags.map((t) => t.toLowerCase());
+
+  // Keywords that suggest different patterns
+  const slidingWindowKeywords = [
+    "subarray",
+    "substring",
+    "window",
+    "sum",
+    "average",
+    "minimum",
+    "maximum",
+    "consecutive",
+    "continuous",
+    "k elements",
+    "size",
+    "length",
+  ];
+
+  const twoPointersKeywords = [
+    "sorted",
+    "two sum",
+    "three sum",
+    "palindrome",
+    "container",
+    "water",
+    "height",
+    "area",
+    "volume",
+  ];
+
+  const binarySearchKeywords = [
+    "sorted",
+    "search",
+    "find",
+    "position",
+    "insert",
+    "sqrt",
+    "square root",
+    "peak",
+    "mountain",
+    "rotated",
+  ];
+
+  const dfsKeywords = [
+    "tree",
+    "graph",
+    "island",
+    "matrix",
+    "grid",
+    "path",
+    "traversal",
+    "inorder",
+    "preorder",
+    "postorder",
+    "clone",
+    "word search",
+  ];
+
+  const bfsKeywords = [
+    "level",
+    "breadth",
+    "shortest",
+    "path",
+    "distance",
+    "ladder",
+    "queue",
+    "level order",
+    "hierarchy",
+  ];
+
+  // Score each template based on keywords
+  const scores = {
+    "sliding-window": 0,
+    "two-pointers": 0,
+    "binary-search": 0,
+    dfs: 0,
+    bfs: 0,
+  };
+
+  // Check problem text
+  slidingWindowKeywords.forEach((keyword) => {
+    if (problemText.includes(keyword) || title.includes(keyword)) {
+      scores["sliding-window"] += 1;
+    }
+  });
+
+  twoPointersKeywords.forEach((keyword) => {
+    if (problemText.includes(keyword) || title.includes(keyword)) {
+      scores["two-pointers"] += 1;
+    }
+  });
+
+  binarySearchKeywords.forEach((keyword) => {
+    if (problemText.includes(keyword) || title.includes(keyword)) {
+      scores["binary-search"] += 1;
+    }
+  });
+
+  dfsKeywords.forEach((keyword) => {
+    if (problemText.includes(keyword) || title.includes(keyword)) {
+      scores["dfs"] += 1;
+    }
+  });
+
+  bfsKeywords.forEach((keyword) => {
+    if (problemText.includes(keyword) || title.includes(keyword)) {
+      scores["bfs"] += 1;
+    }
+  });
+
+  // Check topic tags
+  topics.forEach((topic) => {
+    if (topic.includes("array") || topic.includes("string")) {
+      scores["sliding-window"] += 0.5;
+      scores["two-pointers"] += 0.5;
+    }
+    if (topic.includes("binary search")) {
+      scores["binary-search"] += 2;
+    }
+    if (topic.includes("tree") || topic.includes("graph")) {
+      scores["dfs"] += 1;
+      scores["bfs"] += 1;
+    }
+    if (topic.includes("breadth-first")) {
+      scores["bfs"] += 2;
+    }
+    if (topic.includes("depth-first")) {
+      scores["dfs"] += 2;
+    }
+  });
+
+  // Get top 2-3 templates
+  const sortedTemplates = Object.entries(scores)
+    .filter(([_, score]) => score > 0)
+    .sort(([_, a], [__, b]) => b - a)
+    .slice(0, 3);
+
+  let response = `# Algorithmic Templates for "${problem.title}"\n\n`;
+
+  if (sortedTemplates.length === 0) {
+    response += `## No specific template detected\n\n`;
+    response += `Based on the problem description, no specific algorithmic pattern was strongly detected. Here are all available templates:\n\n`;
+
+    Object.entries(TEMPLATES).forEach(([key, template]) => {
+      response += `### ${template.name}\n`;
+      response += `${template.description}\n\n`;
+      response += `**Examples:** ${template.examples.join(", ")}\n\n`;
+      response += `\`\`\`javascript\n${template.code}\n\`\`\`\n\n`;
+    });
+  } else {
+    response += `## Recommended Templates\n\n`;
+
+    sortedTemplates.forEach(([templateKey, score]) => {
+      const template = TEMPLATES[templateKey];
+      response += `### ${template.name} (Relevance: ${score.toFixed(1)})\n`;
+      response += `${template.description}\n\n`;
+      response += `**Why this fits:** Based on keywords found in the problem.\n\n`;
+      response += `**Examples:** ${template.examples.join(", ")}\n\n`;
+      response += `\`\`\`javascript\n${template.code}\n\`\`\`\n\n`;
+    });
+
+    if (sortedTemplates.length < 3) {
+      response += `## Other Available Templates\n\n`;
+      Object.entries(TEMPLATES).forEach(([key, template]) => {
+        if (!sortedTemplates.find(([k, _]) => k === key)) {
+          response += `### ${template.name}\n`;
+          response += `${template.description}\n\n`;
+          response += `**Examples:** ${template.examples.join(", ")}\n\n`;
+          response += `\`\`\`javascript\n${template.code}\n\`\`\`\n\n`;
+        }
+      });
+    }
+  }
+
+  response += `## How to Use Templates\n\n`;
+  response += `1. **Identify the pattern** that best fits your problem\n`;
+  response += `2. **Adapt the template** by filling in the specific conditions and logic\n`;
+  response += `3. **Handle edge cases** like empty arrays, single elements, etc.\n`;
+  response += `4. **Test thoroughly** with the provided examples\n\n`;
+
+  return response;
+}
+
+function createTemplateSelector() {
+  return `
+    <div class="template-selector">
+      <div class="template-header">
+        <h3>📋 Algorithm Templates</h3>
+        <p class="muted">Choose a template and language, then copy to your LeetCode editor</p>
+      </div>
+      
+      <div class="template-controls">
+        <div class="select-wrapper">
+          <select id="language-select">
+            <option value="">Choose language...</option>
+            ${Object.entries(TEMPLATE_LANGUAGES)
+              .map(
+                ([key, lang]) => `<option value="${key}">${lang.name}</option>`
+              )
+              .join("")}
+          </select>
+        </div>
+        
+        <div class="select-wrapper">
+          <select id="template-select" disabled>
+            <option value="">Choose template first...</option>
+          </select>
+        </div>
+        
+        <button id="copy-template" class="copy-btn" style="display: none;">
+          <span class="copy-text">Copy to Editor</span>
+          <span class="copy-icon">📋</span>
+        </button>
+      </div>
+      
+      <div id="template-description" class="template-description" style="display: none;"></div>
+      
+      <div class="template-code-container">
+        <div class="code-header">
+          <span class="code-label">Template Code</span>
+          <span class="code-hint">Click to select all, Ctrl+C to copy</span>
+        </div>
+        <pre id="template-code" class="code-block">Select a language and template above to see the code...</pre>
+      </div>
+      
+      <div class="template-categories">
+        <h4>📚 Template Categories</h4>
+        <div class="category-grid">
+          ${Object.entries(TEMPLATE_CATEGORIES)
+            .map(
+              ([category, templateKeys]) =>
+                `<div class="category-card">
+              <h5>${category}</h5>
+              <ul>
+                ${templateKeys
+                  .map((key) => {
+                    const template = TEMPLATE_PATTERNS[key];
+                    return `<li>${
+                      template.name
+                    } <span class="difficulty ${template.difficulty
+                      .toLowerCase()
+                      .replace("/", "-")}">${template.difficulty}</span></li>`;
+                  })
+                  .join("")}
+              </ul>
+            </div>`
+            )
+            .join("")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function makeUserPrompt(mode, p) {
   const base = `
 Problem: ${p.title} (${p.difficulty})
@@ -272,6 +531,14 @@ ${p.contentText}
         base +
         "\n\nTask: State typical time/space complexity for the main strategy and why."
       );
+    case "template":
+      return (
+        base +
+        "\n\nTask: Based on the problem description, suggest the most appropriate algorithmic template(s) from the available patterns. For each suggested template, explain why it fits this problem and provide the template code with comments on how to adapt it for this specific problem. Available templates: " +
+        Object.keys(TEMPLATES)
+          .map((key) => TEMPLATES[key].name)
+          .join(", ")
+      );
     default:
       return base;
   }
@@ -288,14 +555,15 @@ function createPanel() {
         <div class="title">LeetCode Helper</div>
         <div class="actions">
           <button id="lc-settings" title="Settings">⚙</button>
-          <button id="lc-collapse" title="Collapse">—</button>
+          <button id="lc-toggle-options" title="Hide Options">▼</button>
+          <button id="lc-minimize" title="Minimize Panel">—</button>
           <button id="lc-close" title="Close">×</button>
         </div>
       </header>
       <div class="body">
         <div class="msg muted">Pick an action below.</div>
       </div>
-      <div class="buttons">
+      <div class="buttons" id="options-buttons">
         <button data-mode="explain">Explain</button>
         <button class="secondary" data-mode="hint1">Hint 1</button>
         <button class="secondary" data-mode="hint2">Hint 2</button>
@@ -303,6 +571,7 @@ function createPanel() {
         <button data-mode="strategy">Strategy</button>
         <button class="secondary" data-mode="edges">Edge cases</button>
         <button class="secondary" data-mode="complexity">Complexity</button>
+        <button data-mode="template">Template</button>
       </div>
     </div>
   `;
@@ -311,8 +580,10 @@ function createPanel() {
   const body = root.querySelector(".body");
   const buttons = root.querySelectorAll(".buttons button");
   const settingsBtn = root.querySelector("#lc-settings");
-  const collapseBtn = root.querySelector("#lc-collapse");
+  const toggleOptionsBtn = root.querySelector("#lc-toggle-options");
+  const minimizeBtn = root.querySelector("#lc-minimize");
   const closeBtn = root.querySelector("#lc-close");
+  const optionsButtons = root.querySelector("#options-buttons");
 
   settingsBtn.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -329,27 +600,231 @@ function createPanel() {
     }
   });
 
+  // Toggle options buttons visibility
+  toggleOptionsBtn.addEventListener("click", () => {
+    const isVisible = optionsButtons.style.display !== "none";
+
+    if (isVisible) {
+      // Hide options
+      optionsButtons.style.display = "none";
+      toggleOptionsBtn.textContent = "▲";
+      toggleOptionsBtn.title = "Show Options";
+    } else {
+      // Show options - restore original grid layout
+      optionsButtons.style.display = "grid";
+      toggleOptionsBtn.textContent = "▼";
+      toggleOptionsBtn.title = "Hide Options";
+    }
+  });
+
+  // Toggle panel content visibility (minimize/maximize)
+  minimizeBtn.addEventListener("click", () => {
+    const isMinimized = body.style.display === "none";
+
+    if (isMinimized) {
+      // Maximize - show body and buttons
+      body.style.display = "block";
+      optionsButtons.style.display = "grid";
+      minimizeBtn.textContent = "—";
+      minimizeBtn.title = "Minimize Panel";
+    } else {
+      // Minimize - hide body and buttons
+      body.style.display = "none";
+      optionsButtons.style.display = "none";
+      minimizeBtn.textContent = "+";
+      minimizeBtn.title = "Maximize Panel";
+    }
+  });
+
   async function handle(mode) {
     body.innerHTML = `<div class="msg muted">Fetching problem…</div>`;
     try {
       const slug = getSlugFromUrl();
       const problem = await fetchProblemViaGraphQL(slug);
 
-      body.innerHTML = `<div class="msg muted">Thinking…</div>`;
-      const resp = await chrome.runtime.sendMessage({
-        type: "ASK",
-        payload: {
-          system: SYSTEM_PROMPT,
-          user: makeUserPrompt(mode, problem),
-        },
-      });
+      if (mode === "template") {
+        // Handle template mode with selector
+        const templateSelector = createTemplateSelector();
+        body.innerHTML = templateSelector;
 
-      if (resp?.error) {
-        body.innerHTML = `<div class="msg">Error: ${resp.error}</div>`;
+        // Add event listeners for template selection
+        const languageSelect = body.querySelector("#language-select");
+        const templateSelect = body.querySelector("#template-select");
+        const copyBtn = body.querySelector("#copy-template");
+        const codeArea = body.querySelector("#template-code");
+        const description = body.querySelector("#template-description");
+
+        // Language selection handler
+        languageSelect.addEventListener("change", () => {
+          const selectedLanguage = languageSelect.value;
+
+          if (selectedLanguage) {
+            // Enable template select and populate with templates
+            templateSelect.disabled = false;
+            templateSelect.innerHTML =
+              '<option value="">Choose a template...</option>';
+
+            Object.entries(TEMPLATE_CATEGORIES).forEach(
+              ([category, templateKeys]) => {
+                const optgroup = document.createElement("optgroup");
+                optgroup.label = category;
+
+                templateKeys.forEach((key) => {
+                  const template = TEMPLATE_PATTERNS[key];
+                  const option = document.createElement("option");
+                  option.value = key;
+                  option.textContent = `${template.name} (${template.difficulty})`;
+                  optgroup.appendChild(option);
+                });
+
+                templateSelect.appendChild(optgroup);
+              }
+            );
+          } else {
+            templateSelect.disabled = true;
+            templateSelect.innerHTML =
+              '<option value="">Choose template first...</option>';
+            codeArea.textContent =
+              "Select a language and template above to see the code...";
+            copyBtn.style.display = "none";
+            description.style.display = "none";
+          }
+        });
+
+        // Template selection handler
+        templateSelect.addEventListener("change", () => {
+          const selectedLanguage = languageSelect.value;
+          const selectedTemplateKey = templateSelect.value;
+          const selectedTemplate = TEMPLATE_PATTERNS[selectedTemplateKey];
+
+          // Remove active class from all category cards
+          body.querySelectorAll(".category-card").forEach((card) => {
+            card.classList.remove("active");
+          });
+
+          if (selectedLanguage && selectedTemplate) {
+            // Load template content for selected language and pattern
+            const templateContent = loadTemplateContent(
+              selectedLanguage,
+              selectedTemplateKey
+            );
+            codeArea.textContent = templateContent;
+            copyBtn.style.display = "block";
+            description.innerHTML = `
+              <div class="template-desc">
+                <strong>${selectedTemplate.name} (${
+              TEMPLATE_LANGUAGES[selectedLanguage].name
+            })</strong><br>
+                ${selectedTemplate.description}<br>
+                <small class="muted">Examples: ${
+                  selectedTemplate.examples?.join(", ") || "Various problems"
+                }</small>
+              </div>
+            `;
+            description.style.display = "block";
+
+            // Highlight the corresponding category card
+            const categoryCards = body.querySelectorAll(".category-card");
+            categoryCards.forEach((card) => {
+              const categoryTitle = card.querySelector("h5").textContent;
+              if (selectedTemplate.category === categoryTitle) {
+                card.classList.add("active");
+              }
+            });
+          } else {
+            codeArea.textContent =
+              "Select a language and template above to see the code...";
+            copyBtn.style.display = "none";
+            description.style.display = "none";
+          }
+        });
+
+        copyBtn.addEventListener("click", () => {
+          const code = codeArea.textContent;
+          navigator.clipboard
+            .writeText(code)
+            .then(() => {
+              const copyText = copyBtn.querySelector(".copy-text");
+              const copyIcon = copyBtn.querySelector(".copy-icon");
+              copyText.textContent = "Copied!";
+              copyIcon.textContent = "✓";
+              copyBtn.style.background =
+                "linear-gradient(135deg, #22c55e, #16a34a)";
+              setTimeout(() => {
+                copyText.textContent = "Copy to Editor";
+                copyIcon.textContent = "📋";
+                copyBtn.style.background =
+                  "linear-gradient(135deg, #22c55e, #16a34a)";
+              }, 2000);
+            })
+            .catch(() => {
+              // Fallback for older browsers
+              codeArea.select();
+              document.execCommand("copy");
+              const copyText = copyBtn.querySelector(".copy-text");
+              const copyIcon = copyBtn.querySelector(".copy-icon");
+              copyText.textContent = "Copied!";
+              copyIcon.textContent = "✓";
+              setTimeout(() => {
+                copyText.textContent = "Copy to Editor";
+                copyIcon.textContent = "📋";
+              }, 2000);
+            });
+        });
+
+        // Add keyboard shortcut (Ctrl/Cmd + C) for copying
+        document.addEventListener("keydown", (e) => {
+          if (
+            (e.ctrlKey || e.metaKey) &&
+            e.key === "c" &&
+            document.activeElement === codeArea
+          ) {
+            e.preventDefault();
+            copyBtn.click();
+          }
+        });
+
+        // Make category cards clickable
+        const categoryCards = body.querySelectorAll(".category-card");
+        categoryCards.forEach((card) => {
+          card.addEventListener("click", () => {
+            const categoryTitle = card.querySelector("h5").textContent;
+            const templateKey = Object.keys(TEMPLATE_PATTERNS).find((key) => {
+              const template = TEMPLATE_PATTERNS[key];
+              return template.category === categoryTitle;
+            });
+
+            if (templateKey) {
+              // If no language is selected, default to JavaScript
+              if (!languageSelect.value) {
+                languageSelect.value = "javascript";
+                languageSelect.dispatchEvent(new Event("change"));
+              }
+
+              // Select the template
+              templateSelect.value = templateKey;
+              templateSelect.dispatchEvent(new Event("change"));
+            }
+          });
+        });
       } else {
-        // Render markdown nicely
-        const html = renderMarkdown(resp.text || "");
-        body.innerHTML = `<div class="msg markdown">${html}</div>`;
+        // Handle other modes with AI
+        body.innerHTML = `<div class="msg muted">Thinking…</div>`;
+        const resp = await chrome.runtime.sendMessage({
+          type: "ASK",
+          payload: {
+            system: SYSTEM_PROMPT,
+            user: makeUserPrompt(mode, problem),
+          },
+        });
+
+        if (resp?.error) {
+          body.innerHTML = `<div class="msg">Error: ${resp.error}</div>`;
+        } else {
+          // Render markdown nicely
+          const html = renderMarkdown(resp.text || "");
+          body.innerHTML = `<div class="msg markdown">${html}</div>`;
+        }
       }
     } catch (e) {
       body.innerHTML = `<div class="msg">Failed: ${
@@ -361,14 +836,6 @@ function createPanel() {
   buttons.forEach((b) =>
     b.addEventListener("click", () => handle(b.dataset.mode))
   );
-
-  collapseBtn.addEventListener("click", () => {
-    const hidden = root.dataset.collapsed === "1";
-    root.dataset.collapsed = hidden ? "0" : "1";
-    root.querySelector(".body").style.display = hidden ? "block" : "none";
-    root.querySelector(".buttons").style.display = hidden ? "grid" : "none";
-    collapseBtn.textContent = hidden ? "—" : "+";
-  });
 
   closeBtn.addEventListener("click", () => destroyPanel());
 
