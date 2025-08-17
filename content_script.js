@@ -293,7 +293,7 @@ function createPanel() {
         </div>
       </header>
       <div class="body">
-        <div class="msg muted">Pick an action below. (AI via Gemini)</div>
+        <div class="msg muted">Pick an action below.</div>
       </div>
       <div class="buttons">
         <button data-mode="explain">Explain</button>
